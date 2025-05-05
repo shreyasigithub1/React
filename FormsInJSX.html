@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <title>React App Forms in JSX</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      let inputRef1 = React.createRef();
+      let inputRef2 = React.createRef();
+      let inputArray = [];
+      function handleSubmit(event) {
+        event.preventDefault();
+        console.log(inputRef1.current.value);
+        console.log(inputRef2.current.value);
+        inputArray.push({
+          name: inputRef1.current.value,
+          marks: inputRef2.current.value,
+        });
+        rootElement.render(<App />);
+        inputRef1.current.value = "";
+        inputRef2.current.value = 0;
+      }
+
+      const Form = () => (
+        <>
+          <h1>Student's Form</h1>
+          <form>
+            <input placeholder="Name" type="text" ref={inputRef1} />
+            <input placeholder="Marks" type="number" ref={inputRef2} />
+            <button onClick={handleSubmit}>Submit</button>
+          </form>
+        </>
+      );
+
+      const Result = () => (
+        <>
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Student's name</th>
+                <th>Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {inputArray.map((i, index) => (
+                <tr key={index}>
+                  <td>{i.name}</td>
+                  <td>{i.marks}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      );
+
+      const App = () => (
+        <>
+          <Form />
+          <br />
+          <Result />
+        </>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+</html>

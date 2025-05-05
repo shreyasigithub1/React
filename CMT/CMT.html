@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="CMT.css" />
+    <title>React App CMT</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      let customers = [];
+      const capacity = 25;
+      let seatsLeft = 25;
+      let guestCountRef = React.createRef();
+      let guestNameRef = React.createRef();
+      let phoneNumberRef = React.createRef();
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      const ampm = hours >= 12 ? "PM" : "AM";
+
+      hours = hours % 12 || 12; // Convert 24-hour to 12-hour format
+
+      console.log(`${hours}:${minutes}:${seconds} ${ampm}`);
+
+      // Create form submit handler here
+      function formSubmitHandler(e) {
+        e.preventDefault();
+        if (seatsLeft > 0) {
+          if (
+            customers.some(
+              (customer) => customer.name === guestNameRef.current.value
+            )
+          ) {
+            alert("Customer already exists");
+          } else {
+            customers.push({
+              name: guestNameRef.current.value,
+              phone: phoneNumberRef.current.value,
+              count: guestCountRef.current.value,
+              checkin: `${hours}:${minutes}:${seconds} ${ampm}`,
+            });
+            seatsLeft = seatsLeft - guestCountRef.current.value;
+          }
+        } else {
+          alert("Guest count exceeds capacity.");
+        }
+
+        rootElement.render(<App />);
+        guestNameRef.current.value = "";
+        phoneNumberRef.current.value = "";
+        guestCountRef.current.value = "";
+      }
+      function deleteRow(index) {
+        console.log(customers[index].count);
+        seatsLeft = seatsLeft + Number(customers[index].count);
+        customers.splice(index, 1);
+
+        rootElement.render(<App />);
+      }
+
+      const App = () => (
+        <div className="App" style={{ textAlign: "center" }}>
+          <div>
+            <h2>Total Capacity:{capacity} </h2>
+            <h2>Seats Left: {seatsLeft}</h2>
+          </div>
+
+          {/* Create a form here for the input count, name and phone number with a submit button*/}
+          <form>
+            <input
+              type="number"
+              placeholder="Guests Count"
+              ref={guestCountRef}
+            />
+            <input
+              type="text"
+              placeholder="Primary Guest Name"
+              ref={guestNameRef}
+            />
+            <input
+              type="tel "
+              placeholder="Phone Number"
+              ref={phoneNumberRef}
+            />
+            <button onClick={formSubmitHandler}>Add Entry</button>
+          </form>
+
+          <table border="1px" style={{ margin: "auto" }}>
+            <thead>
+              <tr>
+                <th>Count</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Check In</th>
+                <th>Remove Entry</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Complete table to show records of customers */}
+              {customers.map((c, index) => (
+                <tr key={index}>
+                  <td>{c.count}</td>
+                  <td>{c.name}</td>
+                  <td>{c.phone}</td>
+                  <td>{c.checkin}</td>
+                  <td onClick={() => deleteRow(index)}>Delete</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    </script>
+  </body>
+</html>
