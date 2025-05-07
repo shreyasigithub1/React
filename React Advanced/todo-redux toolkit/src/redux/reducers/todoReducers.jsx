@@ -42,7 +42,7 @@ const todoSlice = createSlice({
       state.todos.push({ text: action.payload, completed: false });
     },
     toggle: (state, action) => {
-      state.todos.map((todo, i) => {
+      state.todos = state.todos.map((todo, i) => {
         if (i == action.payload) {
           return { ...todo, completed: !todo.completed };
         }
@@ -52,6 +52,13 @@ const todoSlice = createSlice({
   },
 });
 
+//reducer
+
 export const todoReducer = todoSlice.reducer;
 
+//action
+
 export const actions = todoSlice.actions;
+
+//selector
+export const todoSelector = (state) => state.todoReducer.todos;

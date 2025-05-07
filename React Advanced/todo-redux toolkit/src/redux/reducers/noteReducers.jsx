@@ -5,11 +5,11 @@ const initialState = {
   notes: [
     {
       text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus consequatur alias sint quae, repellat porro sapiente omnis sit et quod.",
-      createdOn: new Date(),
+      createdOn: Date.now(),
     },
     {
       text: "ipsum, dolor sit amet consectetur adipisicing elit. Sequi, nemo?",
-      createdOn: new Date(),
+      createdOn: Date.now(),
     },
   ],
 };
@@ -56,3 +56,5 @@ const noteSlice = createSlice({
 export const noteReducer = noteSlice.reducer;
 
 export const actions = noteSlice.actions;
+
+export const noteSelector = (state) => state.noteReducer.notes;

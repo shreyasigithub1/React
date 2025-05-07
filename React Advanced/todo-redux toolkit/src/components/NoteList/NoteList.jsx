@@ -3,17 +3,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { noteReducer } from "../../redux/reducers/noteReducers";
 //import { DeleteNote } from "../../redux/actions/noteActions";
 import { actions } from "../../redux/reducers/noteReducers";
+import { noteSelector } from "../../redux/reducers/noteReducers";
 
 function NoteList() {
   //const notes = [];
-  const notes = useSelector((state) => state.noteReducer.notes);
+  //const notes = useSelector((state) => state.noteReducer.notes);
+  const notes = useSelector(noteSelector);
   const dispatch = useDispatch();
   return (
     <div className="container">
       <ul>
         {notes.map((note, index) => (
           <li>
-            <p>{note.createdOn.toLocaleDateString()}</p>
+            <p>{new Date(note.createdOn).toLocaleDateString()}</p>
             <p className="note-content">{note.text}</p>
             <button
               className="btn btn-danger"
