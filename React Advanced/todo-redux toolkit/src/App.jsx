@@ -24,7 +24,7 @@ function App() {
           element={
             <Fragment>
               <NavBar />
-             <h1>To Dos</h1>
+             <h1>ToDos</h1>
               <TodoForm  />
               <TodoList />
             </Fragment>

@@ -1,11 +1,46 @@
 //import { ADD_TODO, TOGGLE_TODO } from "../actions/todoActions";
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { act } from "react";
 const initialState = {
   todos: [
-    { text: "Meeting at 9", completed: false },
-    { text: "Study at 8", completed: true },
+    // { text: "Meeting at 9", completed: false },
+    // { text: "Study at 8", completed: true },
   ],
 };
+
+export const getInitialStateAsync = createAsyncThunk(
+  "todo/getInitialStateAsync",
+  // (arg,thunkAPI) => {
+  //   axios.get("http://localhost:4100/api/todos/").then((res) => {
+  //     console.log(res.data);
+  //     //dispatch(actions.setIntialState(res.data));
+  //     thunkAPI.dispatch(actions.setIntialState(res.data));
+  //   });
+  // }
+
+  //Another approach
+
+  () => {
+    return axios.get("http://localhost:4100/api/todos/");
+  }
+);
+
+export const addTodoAsync = createAsyncThunk(
+  "todo/addTodo",
+  async (payload) => {
+    const response = await fetch("http://localhost:4100/api/todos", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        text: payload,
+        completed: false,
+      }),
+    });
+    return response.json();
+  }
+);
+
 //reducer using Redux
 
 // export function todoReducers(state = initialState, action) {
@@ -38,9 +73,12 @@ const todoSlice = createSlice({
   name: "todo",
   initialState: initialState,
   reducers: {
-    add: (state, action) => {
-      state.todos.push({ text: action.payload, completed: false });
-    },
+    // setIntialState: (state, action) => {
+    //   state.todos = [...action.payload];
+    // },
+    // add: (state, action) => {
+    //   state.todos.push({ text: action.payload, completed: false });
+    // },
     toggle: (state, action) => {
       state.todos = state.todos.map((todo, i) => {
         if (i == action.payload) {
@@ -49,6 +87,16 @@ const todoSlice = createSlice({
         return todo; //it returns all the todo in the todos array with tyhe modified ones too
       });
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getInitialStateAsync.fulfilled, (state, action) => {
+        state.todos = [...action.payload.data]; // action.payload is the result of the promise from the API data
+      })
+      .addCase(addTodoAsync.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.todos.push(action.payload); // Add new todo to the state
+      });
   },
 });
 
